@@ -1,0 +1,15 @@
+/*Centers the main header*/
+h1 {
+    text-align: center;
+}
+
+/*Centers the smaller headers for the charts and acknowledgements*/
+h2 {
+    text-align: center;
+}
+
+/*Each column is split into even thirds*/
+.split-columns {
+    width: 33.33%;
+    float: left;
+}

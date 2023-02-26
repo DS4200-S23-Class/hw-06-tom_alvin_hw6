@@ -1,15 +1,65 @@
+<!--Creates HTML page-->
 <!DOCTYPE html>
 <html lang='en'>
 
-
 <head>
-  <meta charset='utf-8'>
+    <meta charset=utf-8/>
 
+    <!-- Link stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!--links the D3 and stylesheet and makes a title for webpage-->
+    <script src='js/d3.v6.1.1/d3.min.js'></script>
+
+    <!--The title for the wepbage-->
+    <title>hw-06</title>
 </head>
 
-
 <body>
+    <!--The header for the page-->
+    <h1>hw-06: Brushing and Linking</h1>
+
+    <!--The section for the 1st scatter plot-->
+    <div class = "split-columns">
+        <div id = "vis-1">
+          <h2>Petal_Length vs. Sepal_Length</h2>
+
+        </div>
+    </div>
+
+    <!--The section for the 2nd scatter plot-->
+    <div class = "split-columns">
+        <div id = "vis-2">
+            <h2>Petal_Width vs. Sepal_Width</h2>
+
+        </div>
+    </div>
+
+    <!--The section for the 3rd scatter plot-->
+    <div class = "split-columns">
+        <div id = "vis-3">
+            <h2>Count of Species</h2>
+
+        </div>
+    </div>
+
+    <!--The section for acknowledgements section-->
+    <div>
+      <h2>Acknowledgements</h2>
+      <div>
+        <ul>
+          <li>
+            https://d3-graph-gallery.com/graph/interactivity_brush.html#realgraph
+          </li>
+          <li>
+            https://www.w3schools.com/colors/colors_names.asp
+          </li>
+        </ul>
+      </div>
+    </div>
  
+<!--Links to the main.js file-->
+<script src='js/main.js'></script>
 </body>
 
 </html>
