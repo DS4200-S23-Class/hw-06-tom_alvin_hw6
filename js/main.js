@@ -28,7 +28,7 @@ const FRAME3 = d3.select("#vis-3")
 
 // This function creates the graph with the various points on the graph through the
 // imported csv
-function build_scatter_plot() {
+function build_plots() {
   d3.csv("data/iris.csv").then((data) => {
     
     // Define scale functions that maps our data values 
@@ -177,19 +177,19 @@ function build_scatter_plot() {
     )
 
     function updateChart(event) {
-      const extent = event.selection;
-      
-      circles2.classed("selected", d => {
-        const x = X_SCALE2(d.Sepal_Width) + MARGINS.left;
-        const y = Y_SCALE2(d.Petal_Width) + MARGINS.top;
-        return isBrushed(extent, x, y);
-      });
-      
-      const selection = FRAME2.selectAll(".selected").nodes();
-      const selectionIds = selection.map(node => node.id);
-      const selectionSpecies = selection.map(node => node.getAttribute('species'));
-      
-      circles.classed("selected", d => selectionIds.includes(d.id));
+        const extent = event.selection;
+  
+        circles2.classed("selected", d => {
+          const x = X_SCALE2(d.Sepal_Width) + MARGINS.left;
+          const y = Y_SCALE2(d.Petal_Width) + MARGINS.top;
+          return isBrushed(extent, x, y);
+        });
+  
+        const selection = FRAME2.selectAll(".selected").nodes();
+        const selectionIds = selection.map(node => node.id);
+        const selectionSpecies = selection.map(node => node.getAttribute('species'));
+        
+        circles.classed("selected", d => selectionIds.includes(d.id));
   }
 
   // A function that return TRUE or FALSE according if a dot is in the selection or not
@@ -207,7 +207,7 @@ function build_scatter_plot() {
 }
 
 // builds scatter plot
-build_scatter_plot();
+build_plots();
 
 
 ////////////////////////////////////////////////////////////////////////////////////
