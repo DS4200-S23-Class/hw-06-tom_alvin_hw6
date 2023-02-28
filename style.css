@@ -13,3 +13,9 @@ h2 {
     width: 33.33%;
     float: left;
 }
+
+.selected {
+  opacity: 1 !important;
+  stroke: black;
+  stroke-width: 1px;
+}
