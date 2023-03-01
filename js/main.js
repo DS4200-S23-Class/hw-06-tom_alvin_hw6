@@ -12,13 +12,14 @@ const FRAME1 = d3.select("#vis-1")
                     .attr("width", FRAME_WIDTH)
                     .attr("class", "frame"); 
 
+//This creates an svg for the 2nd visual
 const FRAME2 = d3.select("#vis-2") 
                   .append("svg") 
                     .attr("height", FRAME_HEIGHT)   
                     .attr("width", FRAME_WIDTH)
                     .attr("class", "frame"); 
 
-
+//This creates an svg for the 3rd visual
 const FRAME3 = d3.select("#vis-3") 
                   .append("svg") 
                     .attr("height", FRAME_HEIGHT)   
@@ -26,9 +27,10 @@ const FRAME3 = d3.select("#vis-3")
                     .attr("class", "frame"); 
 
 
-// This function creates the graph with the various points on the graph through the
+// This function creates all charts with linking capabilities
 // imported csv
 function build_plots() {
+  // Load csv
   d3.csv("data/iris.csv").then((data) => {
     
     // Define scale functions that maps our data values 
@@ -55,12 +57,15 @@ function build_plots() {
           .attr("cx", (d) => { return (X_SCALE(d.Sepal_Length) + MARGINS.left); }) 
           .attr("cy", (d) => { return (Y_SCALE(d.Petal_Length) + MARGINS.top); }) 
           .attr("r", 4)
-          .attr('id', (d) => {
-            return d.id
-        })
           .attr("class", "point")
           .attr("fill", function(d){return colors(d.Species)})
-          .attr("opacity", "50%");
+          .attr("opacity", "50%")
+          // add ID attribute to these points so they can be linked to the 2nd visual
+          .attr('id', (d) => {
+            return d.id})
+          // Add a species attribute that represents the species of each point. Used for linking to the bar chart
+          .attr('species', (d) => {
+            return d.Species});
 
     // adds x axis labels
     FRAME1.append("g") 
@@ -98,11 +103,15 @@ function build_plots() {
           .attr("cy", (d) => { return (Y_SCALE2(d.Petal_Width) + MARGINS.top); }) 
           .attr("r", 4)
           .attr("class", "point")
-          .attr('id', (d) => {
-            return d.id
-        })
           .attr("fill", function(d){return colors(d.Species)})
-          .attr("opacity", "50%");
+          .attr("opacity", "50%")
+          // add ID attribute to these points so they can be linked to the 1st visual
+          .attr('id', (d) => {
+            return d.id})
+          // Add a species attribute that represents the species of each point. Used for linking to the bar chart
+          .attr('species', (d) => {
+          return d.Species});
+
 
     // adds x axis labels
     FRAME2.append("g") 
@@ -165,40 +174,45 @@ function build_plots() {
         .attr('width', X_SCALE3.bandwidth())
         .attr('height', function(d) { return VIS_HEIGHT - Y_SCALE3(d.count); })
         .attr('fill', function(d) {return colors(d.species)})
-        .attr("opacity", "50%");
+        .attr("opacity", "50%")
+        .attr('species', (d) => {
+            return d.Species
+        });
 
-
-
-
+    // Adding the brush element to the 2nd Frame
     FRAME2.call(
       d3.brush()
-      .extent( [ [0,0], [FRAME_WIDTH,FRAME_HEIGHT] ] )// initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+      .extent( [ [0,0], [FRAME_WIDTH,FRAME_HEIGHT] ] )
       .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
     )
 
     function updateChart(event) {
-        const extent = event.selection;
-  
-        circles2.classed("selected", d => {
-          const x = X_SCALE2(d.Sepal_Width) + MARGINS.left;
-          const y = Y_SCALE2(d.Petal_Width) + MARGINS.top;
-          return isBrushed(extent, x, y);
-        });
-  
-        const selection = FRAME2.selectAll(".selected").nodes();
-        const selectionIds = selection.map(node => node.id);
-        const selectionSpecies = selection.map(node => node.getAttribute('species'));
-        
-        circles.classed("selected", d => selectionIds.includes(d.id));
-  }
+      // Extracts current selection extent from the brush selection
+      extent = event.selection
+      
+      // Selects all the circles in circle 2 that are inside of the selection extent, and changes them
+      // to the "selected" class, which adds a border
+      circles2.classed("selected", (d) => isBrushed(extent, X_SCALE2(d.Sepal_Width) + MARGINS.left, Y_SCALE2(d.Petal_Width) + MARGINS.top))
 
-  // A function that return TRUE or FALSE according if a dot is in the selection or not
+      // Get an array of selected circles' IDs and species
+      const selection = FRAME2.selectAll(".selected")
+      const selection_ids = selection.nodes().map(node => node.id)
+      const selection_species = selection.nodes().map(node => node.getAttribute('species'))
+
+      // Set the "selected" class on circles that match the IDs of the selected circles
+      circles.classed("selected", (d) => selection_ids.includes(d.id))
+
+      // Highlight bars where any points for that species have been selected
+      bars.classed('selected', (d) => selection_species.includes(d.species))
+    }
+
+    // A function that return TRUE or FALSE according if a dot is in the selection or not
     function isBrushed(brush_coords, cx, cy) {
          var x0 = brush_coords[0][0],
              x1 = brush_coords[1][0],
              y0 = brush_coords[0][1],
              y1 = brush_coords[1][1];
-        return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;    // This return TRUE or FALSE depending on if the points is in the selected area
+        return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;    
     }
 
     
@@ -206,10 +220,7 @@ function build_plots() {
   });
 }
 
-// builds scatter plot
+// builds scatter plots and bar
 build_plots();
 
-
-////////////////////////////////////////////////////////////////////////////////////
-// Add brushing to the first visualization
 
